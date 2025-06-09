@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
 """
-Created on Sun Jun  8 19:23:53 2025
-
 @author: Barath
 
 Project title: Stock Price Simulation using Markov Chains
@@ -28,14 +25,14 @@ start_date='2020-01-01'
 end_date='2022-12-31'
 
 data=yf.download(ticker,start_date,end_date)
-closing_prices=data["Close"][ticker]      # Extract just the closing prices for analysis
+closing_prices=data["Close"][ticker]                     # Extract just the closing prices for analysis
 
 
 #**************************************
 # Convert Returns to Discrete States
 #**************************************
 
-returns=closing_prices.pct_change().dropna() #Calculates the percentage change
+returns=closing_prices.pct_change().dropna()             # Calculates the percentage change
 # +1 for up, -1 for down, 0 for neutral
 
 def get_state(change, threshold=0.002):
@@ -78,29 +75,29 @@ for current_st in transitions:
 # Run Multiple Simulations
 #**************************************
 
-n_days=30                              #No. of future days to simulate
-simulations=100                         #No. of simulations
+n_days=30                                                # No. of future days to simulate
+simulations=100                                          # No. of simulations
 
 simulated_prices_matrix=[]
 
 for i in range(simulations):
-    initial_price=closing_prices.iloc[-1]   #Start with latest real price
-    current_st=states.iloc[-1]              #Start with the last known state
-    simulated_prices=[initial_price]        #each simulation generates a list of prices for n_days + 1 day (starting from the last real price)
+    initial_price=closing_prices.iloc[-1]                # Start with latest real price
+    current_st=states.iloc[-1]                           # Start with the last known state
+    simulated_prices=[initial_price]                     # Each simulation generates a list of prices for n_days + 1 day (starting from the last real price)
     
     for j in range(n_days):
-        probabs=list(transitions[current_st].values())  # probab of next possible state
+        probabs=list(transitions[current_st].values())   # Probabilities of next possible state
         next_possible_states=[-1,0,1]
         next_st=random.choices(next_possible_states,weights=probabs)[0]  # Randomly choose the next state based on these probabilities
         current_st=next_st
         
         # Estimate next price based on assumed movement per state
         if next_st==1:
-            next_price=simulated_prices[-1]*(1 + 0.1)    # 1% up
+            next_price=simulated_prices[-1]*(1 + 0.1)    # 10% up
         elif next_st == -1:
-            next_price=simulated_prices[-1]*(1 - 0.1)    # 1% down
+            next_price=simulated_prices[-1]*(1 - 0.1)    # 10% down
         else:
-            next_price=simulated_prices[-1]               # No change
+            next_price=simulated_prices[-1]              # No change
     
         simulated_prices.append(next_price)
     simulated_prices_matrix.append(simulated_prices)
@@ -140,8 +137,3 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
-
-
-
-
