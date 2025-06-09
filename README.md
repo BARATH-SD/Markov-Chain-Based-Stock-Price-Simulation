@@ -53,5 +53,3 @@ To simulate the next *N* days of a stock's price (e.g., AAPL) using historical r
 
 ---
 
-## 📁 Folder Structure
-
